@@ -6,14 +6,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import tt.authorization.dto.UserDto;
 import tt.authorization.entity.User;
+import tt.authorization.enums.Role;
 import tt.authorization.exception.CommonException;
 import tt.authorization.repository.UserRepository;
+
+import javax.annotation.PostConstruct;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
+
+    @PostConstruct
+    private void execute() {
+        createAdmin();
+    }
+
     @Override
     public User create(UserDto userDto) {
        return userRepository.save(new User(userDto));
@@ -25,5 +34,13 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new CommonException(
                         String.format("User with id %d not found", id), HttpStatus.NOT_FOUND.value()));
         userRepository.delete(user);
+    }
+
+    private void createAdmin() {
+        User admin = new User();
+        admin.setEmail("sanya88man@gmail.com");
+        admin.setPassword("12345");
+        admin.setRole(Role.ROLE_ADMIN);
+        userRepository.save(admin);
     }
 }

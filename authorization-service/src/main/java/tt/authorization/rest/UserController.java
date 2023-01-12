@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import tt.authorization.dto.UserDto;
+import tt.authorization.service.UserService;
 import tt.authorization.service.UserServiceImpl;
 
 import static java.lang.String.format;
@@ -14,9 +15,9 @@ import static java.lang.String.format;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/user")
+@RequestMapping("/api/users")
 public class UserController {
-    private final UserServiceImpl userService;
+    private final UserService userService;
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")

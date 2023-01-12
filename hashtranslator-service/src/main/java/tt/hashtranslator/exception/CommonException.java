@@ -1,4 +1,4 @@
-package tt.authorization.exception;
+package tt.hashtranslator.exception;
 
 import lombok.Getter;
 
