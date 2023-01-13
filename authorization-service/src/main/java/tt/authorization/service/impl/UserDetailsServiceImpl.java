@@ -1,6 +1,7 @@
-package tt.authorization.service;
+package tt.authorization.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,6 +14,7 @@ import tt.authorization.repository.UserRepository;
 
 import static java.util.Collections.singletonList;
 
+@Slf4j
 @Service("userDetailsService")
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -20,6 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        log.debug("Start checking if user with username {} exists", username);
         User user = userRepository.findUserByEmail(username)
                 .orElseThrow(() -> new CommonException(
                         String.format("User with username %s not found", username), HttpStatus.NOT_FOUND.value()));
