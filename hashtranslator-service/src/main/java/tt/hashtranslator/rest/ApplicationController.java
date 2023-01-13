@@ -26,6 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 @RequiredArgsConstructor
 @RequestMapping("/api/applications")
 public class ApplicationController {
+    private static final String AUTH_SERVER_URL = "http://localhost:8080/api/users/auth";
+
     private final ApplicationService applicationService;
     private final RestTemplate client;
 
@@ -46,8 +48,7 @@ public class ApplicationController {
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> httpEntity = new HttpEntity<>(headers);
         headers.set("Authorization", token);
-        ResponseEntity<Object> response = client.exchange(
-                "http://localhost:8080/api/users/auth", HttpMethod.GET, httpEntity, Object.class);
+        ResponseEntity<Object> response = client.exchange(AUTH_SERVER_URL, HttpMethod.GET, httpEntity, Object.class);
         if (response.getStatusCode().value() != 200) {
             throw new CommonException("Unauthorized. Check your credentials", HttpStatus.UNAUTHORIZED.value());
         }

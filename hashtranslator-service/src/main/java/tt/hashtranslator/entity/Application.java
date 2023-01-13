@@ -11,6 +11,6 @@ import java.util.List;
 @Document
 public class Application {
     @Id
-    private Long id;
+    private long id;
     private List<String> hashes;
 }

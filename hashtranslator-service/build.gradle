@@ -18,8 +18,8 @@ tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
 }
 
-jar {
-    enabled = false // to prevent create plain jar
+bootJar {
+    destinationDirectory = file("$buildDir/distribution")
 }
 
 dependencies {

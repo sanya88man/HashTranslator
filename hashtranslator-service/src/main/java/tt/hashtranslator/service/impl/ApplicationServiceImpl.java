@@ -19,7 +19,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final HashService hashService;
 
     @Override
-    public Long decodeHashes(ApplicationDto applicationDto) {
+    public long decodeHashes(ApplicationDto applicationDto) {
         Application application = new Application();
         application.setHashes(applicationDto.getHashes());
         Application savedApplication = applicationRepository.save(application);
