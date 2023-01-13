@@ -16,10 +16,13 @@ import javax.annotation.PostConstruct;
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+    private static final String ADMIN_EMAIL = "sanya88man@gmail.com";
+    private static final String ADMIN_PWD = "$2a$10$c5COdQ7.MXjUVSiylnldl.qW7YHK2EcXUU1JVlm7QM2F5GOKELbpG";
     private final UserRepository userRepository;
 
     @PostConstruct
     private void execute() {
+        log.info("Start creating admin with username: {}", ADMIN_EMAIL);
         createAdmin();
     }
 
@@ -38,9 +41,9 @@ public class UserServiceImpl implements UserService {
 
     private void createAdmin() {
         User admin = new User();
-        admin.setEmail("sanya88man@gmail.com");
-        admin.setPassword("12345");
+        admin.setEmail(ADMIN_EMAIL);
+        admin.setPassword(ADMIN_PWD);
         admin.setRole(Role.ROLE_ADMIN);
-        userRepository.save(admin);
+        userRepository.findUserByEmail(ADMIN_EMAIL).orElseGet(() -> userRepository.save(admin));
     }
 }

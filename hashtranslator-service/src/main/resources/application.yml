@@ -1,5 +1,10 @@
 spring:
   application:
     name: hash-translator
+  data:
+    mongodb:
+      uri:
+      password:
+      database:
 server:
   port: 8081
