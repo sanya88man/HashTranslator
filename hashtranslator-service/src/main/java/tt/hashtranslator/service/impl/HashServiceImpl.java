@@ -24,7 +24,7 @@ public class HashServiceImpl implements HashService {
     public void decode(Application application) {
         List<String> resultHashes = new ArrayList<>();
         application.getHashes().forEach(h -> {
-            String response = client.getForObject("localhost:8080/api/users/auth", String.class);
+            String response = client.getForObject(MD5_URL, String.class);
             resultHashes.add(response);
         });
         application.setHashes(resultHashes);

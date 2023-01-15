@@ -26,15 +26,16 @@ import javax.servlet.http.HttpServletRequest;
 @RequiredArgsConstructor
 @RequestMapping("/api/applications")
 public class ApplicationController {
-    private static final String AUTH_SERVER_URL = "http://localhost:8080/api/users/auth";
+    private static final String AUTH_SERVER_URL = "http://authorization-service:8080/api/auth";
 
     private final ApplicationService applicationService;
     private final RestTemplate client;
 
     @PostMapping
-    public ResponseEntity<Long> sendApplication(@RequestBody ApplicationDto applicationDto, HttpServletRequest request) {
+    public ResponseEntity<Long> sendApplication(
+            @RequestBody ApplicationDto applicationDto, HttpServletRequest request) {
         log.info("Request to decode hashes...");
-        checkAuth(request.getHeader("Authorization"));
+        checkAuth(request.getHeader(HttpHeaders.AUTHORIZATION));
         return new ResponseEntity<>(applicationService.decodeHashes(applicationDto), HttpStatus.ACCEPTED);
     }
 
@@ -48,8 +49,8 @@ public class ApplicationController {
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> httpEntity = new HttpEntity<>(headers);
         headers.set("Authorization", token);
-        ResponseEntity<Object> response = client.exchange(AUTH_SERVER_URL, HttpMethod.GET, httpEntity, Object.class);
-        if (response.getStatusCode().value() != 200) {
+        ResponseEntity<Object> response = client.exchange(AUTH_SERVER_URL, HttpMethod.POST, httpEntity, Object.class);
+        if (response.getStatusCode().value() != HttpStatus.OK.value()) {
             throw new CommonException("Unauthorized. Check your credentials", HttpStatus.UNAUTHORIZED.value());
         }
     }

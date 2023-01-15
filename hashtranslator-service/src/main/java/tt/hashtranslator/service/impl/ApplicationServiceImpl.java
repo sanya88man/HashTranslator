@@ -11,6 +11,8 @@ import tt.hashtranslator.repository.ApplicationRepository;
 import tt.hashtranslator.service.ApplicationService;
 import tt.hashtranslator.service.HashService;
 
+import static java.lang.String.format;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -31,6 +33,6 @@ public class ApplicationServiceImpl implements ApplicationService {
     public Application getById(long id) {
         return applicationRepository.findById(id)
                 .orElseThrow(() -> new CommonException(
-                        String.format("Application with id %d not found", id), HttpStatus.NOT_FOUND.value()));
+                        format("Application with id %d not found", id), HttpStatus.NOT_FOUND.value()));
     }
 }
