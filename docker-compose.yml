@@ -1,17 +1,48 @@
-version: "2"
-
+version: '3'
 services:
-  hash-translator:
-    build:
-      context: hashtranslator-service
-    restart: on-failure
+
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    volumes:
+      - ./mongodb:/data/db
+    ports:
+      - "27017:27017"
+
+  postgres:
+    image: postgres:12
+    container_name: postgres
     environment:
-      HASHTRANSLATOR_HELLO_TEMPLATE: configured hashtranslator hello for %s from %s
+      POSTGRES_USER: SA
+      POSTGRES_PASSWORD: Heureka10
+      POSTGRES_DB: omn
+      PGDATA: /data/postgres
+    volumes:
+      - ./postgres:/data/postgres
+    ports:
+      - "5435:5432"
+    restart: unless-stopped
+
+  authorization-service:
+    container_name: authorization-service
+    depends_on:
+      - postgres
+    build:
+      context: ../authorization-service
+      dockerfile: Dockerfile
     ports:
       - "8080:8080"
-  authorization-service:
+    volumes:
+      - ./authorization-service:/data/logs
+
+  hashtranslator-service:
+    container_name: hashtranslator-service
+    depends_on:
+      - mongodb
     build:
-      context: authorization-service
-    restart: on-failure
-    environment:
-      AUTHORIZATION_HELLO_TEMPLATE: configured authorization hello for %s from %s
+      context: ../hashtranslator-service
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./hashtranslator-service:/data/logs
