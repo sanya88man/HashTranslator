@@ -1,3 +1,10 @@
 spring:
   application:
     name: hash-translator
+  data:
+    mongodb:
+      host: mongodb
+      port: 27017
+      database: testdb
+server:
+  port: 8081
