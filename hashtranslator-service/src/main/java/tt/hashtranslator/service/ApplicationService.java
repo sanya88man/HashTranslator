@@ -4,7 +4,7 @@ import tt.hashtranslator.dto.ApplicationDto;
 import tt.hashtranslator.entity.Application;
 
 public interface ApplicationService {
-    long decodeHashes(ApplicationDto applicationDto);
+    String process(ApplicationDto applicationDto);
 
-    Application getById(long id);
+    Application getById(String id);
 }

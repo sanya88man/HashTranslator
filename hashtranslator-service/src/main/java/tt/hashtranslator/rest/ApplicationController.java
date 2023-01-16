@@ -32,23 +32,23 @@ public class ApplicationController {
     private final RestTemplate client;
 
     @PostMapping
-    public ResponseEntity<Long> sendApplication(
+    public ResponseEntity<String> sendApplication(
             @RequestBody ApplicationDto applicationDto, HttpServletRequest request) {
         log.info("Request to decode hashes...");
         checkAuth(request.getHeader(HttpHeaders.AUTHORIZATION));
-        return new ResponseEntity<>(applicationService.decodeHashes(applicationDto), HttpStatus.ACCEPTED);
+        return new ResponseEntity<>(applicationService.process(applicationDto), HttpStatus.ACCEPTED);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Application> getApplication(@PathVariable long id) {
-        log.info("Request to get application info...");
+    public ResponseEntity<Application> getApplication(@PathVariable String id) {
+        log.info("Request to get application with id: {}", id);
         return new ResponseEntity<>(applicationService.getById(id), HttpStatus.OK);
     }
 
     private void checkAuth(String token) {
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> httpEntity = new HttpEntity<>(headers);
-        headers.set("Authorization", token);
+        headers.set(HttpHeaders.AUTHORIZATION, token);
         ResponseEntity<Object> response = client.exchange(AUTH_SERVER_URL, HttpMethod.POST, httpEntity, Object.class);
         if (response.getStatusCode().value() != HttpStatus.OK.value()) {
             throw new CommonException("Unauthorized. Check your credentials", HttpStatus.UNAUTHORIZED.value());

@@ -21,7 +21,8 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final HashService hashService;
 
     @Override
-    public long decodeHashes(ApplicationDto applicationDto) {
+    public String process(ApplicationDto applicationDto) {
+        log.debug("Start processing an application...");
         Application application = new Application();
         application.setHashes(applicationDto.getHashes());
         Application savedApplication = applicationRepository.save(application);
@@ -30,9 +31,9 @@ public class ApplicationServiceImpl implements ApplicationService {
     }
 
     @Override
-    public Application getById(long id) {
+    public Application getById(String id) {
         return applicationRepository.findById(id)
                 .orElseThrow(() -> new CommonException(
-                        format("Application with id %d not found", id), HttpStatus.NOT_FOUND.value()));
+                        format("Application with id %s not found", id), HttpStatus.NOT_FOUND.value()));
     }
 }
