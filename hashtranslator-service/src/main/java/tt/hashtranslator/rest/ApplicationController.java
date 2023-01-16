@@ -20,6 +20,7 @@ import tt.hashtranslator.exception.CommonException;
 import tt.hashtranslator.service.ApplicationService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @Slf4j
 @RestController
@@ -33,7 +34,7 @@ public class ApplicationController {
 
     @PostMapping
     public ResponseEntity<String> sendApplication(
-            @RequestBody ApplicationDto applicationDto, HttpServletRequest request) {
+            @Valid @RequestBody ApplicationDto applicationDto, HttpServletRequest request) {
         log.info("Request to decode hashes...");
         checkAuth(request.getHeader(HttpHeaders.AUTHORIZATION));
         return new ResponseEntity<>(applicationService.process(applicationDto), HttpStatus.ACCEPTED);

@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RestController;
 import tt.authorization.dto.UserDto;
 import tt.authorization.service.UserService;
 
+import javax.validation.Valid;
+
 import static java.lang.String.format;
 
 @Slf4j
@@ -25,7 +27,7 @@ public class UserController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Object> create(@RequestBody UserDto userDto) {
+    public ResponseEntity<Object> create(@Valid @RequestBody UserDto userDto) {
         log.info("Request to create user {}", userDto.getEmail());
         userService.create(userDto);
         return new ResponseEntity<>(format("User %s has been created.", userDto.getEmail()), HttpStatus.CREATED);
