@@ -18,6 +18,10 @@ import javax.validation.Valid;
 
 import static java.lang.String.format;
 
+/**
+ * REST controller for manipulating users.
+ * @see tt.authorization.entity.User
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +29,12 @@ import static java.lang.String.format;
 public class UserController {
     private final UserService userService;
 
+    /**
+     * Endpoint for creating user.
+     *
+     * @param userDto {@link UserDto}
+     * @return {@link ResponseEntity} with http status
+     */
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Object> create(@Valid @RequestBody UserDto userDto) {
@@ -33,6 +43,12 @@ public class UserController {
         return new ResponseEntity<>(format("User %s has been created.", userDto.getEmail()), HttpStatus.CREATED);
     }
 
+    /**
+     * Endpoint for deleting user.
+     *
+     * @param id user id
+     * @return {@link ResponseEntity} with http status
+     */
     @DeleteMapping("{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Object> delete(@PathVariable long id) {

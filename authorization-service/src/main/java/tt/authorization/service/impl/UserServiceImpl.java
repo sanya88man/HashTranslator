@@ -17,6 +17,9 @@ import static java.lang.String.format;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+/**
+ * Implementation of {@link UserService}.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -26,6 +29,9 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Creates admin diring  if he doesn't exist.
+     */
     @PostConstruct
     private void execute() {
         log.debug("Start creating admin with username: {}", ADMIN_EMAIL);

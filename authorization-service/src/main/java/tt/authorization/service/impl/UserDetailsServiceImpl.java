@@ -12,8 +12,13 @@ import tt.authorization.entity.User;
 import tt.authorization.exception.CommonException;
 import tt.authorization.repository.UserRepository;
 
+import javax.annotation.PostConstruct;
+
 import static java.util.Collections.singletonList;
 
+/**
+ * Implementation of {@link UserDetailsService}.
+ */
 @Slf4j
 @Service("userDetailsService")
 @RequiredArgsConstructor
