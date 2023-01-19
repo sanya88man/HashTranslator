@@ -13,6 +13,9 @@ import tt.hashtranslator.service.HashService;
 
 import static java.lang.String.format;
 
+/**
+ * Implementation of {@link Application}.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor

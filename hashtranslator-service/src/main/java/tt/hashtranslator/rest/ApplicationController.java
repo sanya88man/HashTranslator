@@ -22,6 +22,9 @@ import tt.hashtranslator.service.ApplicationService;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+/**
+ * REST controller for interacting with application.
+ */
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -32,6 +35,13 @@ public class ApplicationController {
     private final ApplicationService applicationService;
     private final RestTemplate client;
 
+    /**
+     * Endpoint for sending application to decode hashes.
+     *
+     * @param applicationDto {@link ApplicationDto}
+     * @param request        {@link HttpServletRequest}
+     * @return {@link ResponseEntity<String>} with http status
+     */
     @PostMapping
     public ResponseEntity<String> sendApplication(
             @Valid @RequestBody ApplicationDto applicationDto, HttpServletRequest request) {
@@ -40,12 +50,25 @@ public class ApplicationController {
         return new ResponseEntity<>(applicationService.process(applicationDto), HttpStatus.ACCEPTED);
     }
 
+    /**
+     * Endpoint for getting application by id.
+     *
+     * @param id      application id
+     * @param request {@link HttpServletRequest}
+     * @return {@link ResponseEntity<Application>} with http status
+     */
     @GetMapping("{id}")
-    public ResponseEntity<Application> getApplication(@PathVariable String id) {
+    public ResponseEntity<Application> getApplication(@PathVariable String id, HttpServletRequest request) {
         log.info("Request to get application with id: {}", id);
+        checkAuth(request.getHeader(HttpHeaders.AUTHORIZATION));
         return new ResponseEntity<>(applicationService.getById(id), HttpStatus.OK);
     }
 
+    /**
+     * Sends request to auth-service for checking authentication.
+     *
+     * @param token basic token
+     */
     private void checkAuth(String token) {
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> httpEntity = new HttpEntity<>(headers);
