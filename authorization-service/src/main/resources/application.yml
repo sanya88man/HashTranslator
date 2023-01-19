@@ -12,3 +12,12 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     database: postgresql
     show-sql: true
+logging:
+  level:
+    tt.authorization: DEBUG
+
+# Authorization-service
+auth-service:
+  admin:
+    email: sanya88man@gmail.com
+    pwd: $2a$10$c5COdQ7.MXjUVSiylnldl.qW7YHK2EcXUU1JVlm7QM2F5GOKELbpG

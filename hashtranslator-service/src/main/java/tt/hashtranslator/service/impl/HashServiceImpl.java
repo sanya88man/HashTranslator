@@ -2,6 +2,7 @@ package tt.hashtranslator.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -26,14 +27,16 @@ import static reactor.core.publisher.Mono.just;
 @Service
 @RequiredArgsConstructor
 public class HashServiceImpl implements HashService {
-    private final static String HASH_API_EMAIL = "sanya88man@gmail.com";
     private final static String HASH_TYPE = "md5";
-    private final static String HASH_API_CODE = "c48637088f7f771d";
     private final static String HASH_API_PATH = "/api.php";
     private final static String EMPTY_STRING = "";
 
     private final ApplicationRepository applicationRepository;
     private final WebClient hashDecoderClient;
+    @Value("${hash.api.email}")
+    private String hashApiEmail;
+    @Value("${hash.api.code}")
+    private String hashApiCode;
 
     @Async
     @Override
@@ -57,8 +60,8 @@ public class HashServiceImpl implements HashService {
                         .path(HASH_API_PATH)
                         .queryParam("hash", hash)
                         .queryParam("hash_type", HASH_TYPE)
-                        .queryParam("email", HASH_API_EMAIL)
-                        .queryParam("code", HASH_API_CODE).build())
+                        .queryParam("email", hashApiEmail)
+                        .queryParam("code", hashApiCode).build())
                 .exchangeToMono(response ->
                         response.statusCode().equals(OK) ? response.bodyToMono(String.class) : just(EMPTY_STRING));
     }

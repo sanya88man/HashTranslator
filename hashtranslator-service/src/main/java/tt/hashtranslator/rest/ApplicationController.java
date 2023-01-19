@@ -2,6 +2,7 @@ package tt.hashtranslator.rest;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -30,10 +31,10 @@ import javax.validation.Valid;
 @RequiredArgsConstructor
 @RequestMapping("/api/applications")
 public class ApplicationController {
-    private static final String AUTH_SERVER_URL = "http://authorization-service:8080/api/auth";
-
     private final ApplicationService applicationService;
     private final RestTemplate client;
+    @Value("${auth-service.url}")
+    private String authServiceUrl;
 
     /**
      * Endpoint for sending application to decode hashes.
@@ -73,7 +74,7 @@ public class ApplicationController {
         HttpHeaders headers = new HttpHeaders();
         HttpEntity<String> httpEntity = new HttpEntity<>(headers);
         headers.set(HttpHeaders.AUTHORIZATION, token);
-        ResponseEntity<Object> response = client.exchange(AUTH_SERVER_URL, HttpMethod.POST, httpEntity, Object.class);
+        ResponseEntity<Object> response = client.exchange(authServiceUrl, HttpMethod.POST, httpEntity, Object.class);
         if (response.getStatusCode().value() != HttpStatus.OK.value()) {
             throw new CommonException("Unauthorized. Check your credentials", HttpStatus.UNAUTHORIZED.value());
         }
