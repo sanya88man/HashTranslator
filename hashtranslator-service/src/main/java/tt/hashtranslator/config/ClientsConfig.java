@@ -11,15 +11,28 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 
+/**
+ * Represents clients configuration.
+ */
 @Configuration
-public class AppConfig {
+public class ClientsConfig {
     private static final String MD5_DECODER_URL = "https://md5decrypt.net/en/Api";
 
+    /**
+     * Creates rest template client bean.
+     *
+     * @return new {@link RestTemplate}
+     */
     @Bean
-    public RestTemplate restTemplate() {
+    public RestTemplate restTemplateClient() {
         return new RestTemplate();
     }
 
+    /**
+     * Creates hash decoder client bean.
+     *
+     * @return configured {@link WebClient}
+     */
     @Bean
     public WebClient hashDecoderClient() {
         HttpClient httpClient = HttpClient.create()
@@ -28,9 +41,7 @@ public class AppConfig {
                                 .doOnConnected(connection -> connection
                                         .addHandlerLast(new ReadTimeoutHandler(10))
                                         .addHandlerLast(new WriteTimeoutHandler(10))));
-
         ClientHttpConnector connector = new ReactorClientHttpConnector(httpClient);
-
         return WebClient.builder()
                 .baseUrl(MD5_DECODER_URL)
                 .clientConnector(connector)

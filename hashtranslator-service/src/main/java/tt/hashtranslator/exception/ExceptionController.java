@@ -72,6 +72,12 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
         return logAndCreateResponse(ex);
     }
 
+    /**
+     * Builds response for bad request status.
+     *
+     * @param ex exception to make response for
+     * @return {@link ResponseEntity} with error message and http status 400
+     */
     private static ResponseEntity<Object> logAndCreateResponse(Exception ex) {
         log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(

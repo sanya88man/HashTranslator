@@ -2,6 +2,7 @@ package tt.authorization.service.impl;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import tt.authorization.dto.UserDto;
@@ -17,18 +18,26 @@ import static java.lang.String.format;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+/**
+ * Implementation of {@link UserService}.
+ */
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private static final String ADMIN_EMAIL = "sanya88man@gmail.com";
-    private static final String ADMIN_PWD = "$2a$10$c5COdQ7.MXjUVSiylnldl.qW7YHK2EcXUU1JVlm7QM2F5GOKELbpG";
+    @Value("${auth-service.admin.email}")
+    private String adminEmail;
+    @Value("${auth-service.admin.pwd}")
+    private String adminPwd;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    /**
+     * Creates admin diring  if he doesn't exist.
+     */
     @PostConstruct
     private void execute() {
-        log.debug("Start creating admin with username: {}", ADMIN_EMAIL);
+        log.debug("Start creating admin with username: {}", adminEmail);
         createAdmin();
     }
 
@@ -50,14 +59,15 @@ public class UserServiceImpl implements UserService {
 
     private void createAdmin() {
         User admin = new User();
-        admin.setEmail(ADMIN_EMAIL);
-        admin.setPassword(ADMIN_PWD);
+        admin.setEmail(adminEmail);
+        admin.setPassword(adminPwd);
         admin.setRole(Role.ROLE_ADMIN);
-        userRepository.findUserByEmail(ADMIN_EMAIL).orElseGet(() -> userRepository.save(admin));
+        userRepository.findUserByEmail(adminEmail).orElseGet(() -> userRepository.save(admin));
     }
 
     private void checkExistence(String username) {
         if (userRepository.findUserByEmail(username).isPresent()) {
+            log.debug("User: {} already exists", username);
             throw new CommonException(format("User: %s already exists", username), BAD_REQUEST.value());
         }
     }

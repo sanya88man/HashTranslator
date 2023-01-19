@@ -6,6 +6,11 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
+/**
+ * Dto for Application.
+ *
+ * @see tt.hashtranslator.entity.Application
+ */
 @Getter
 public class ApplicationDto {
     @NotNull

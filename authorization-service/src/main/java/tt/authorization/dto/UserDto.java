@@ -7,7 +7,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 /**
- * Dto for user.
+ * Dto for {@link tt.authorization.entity.User} entity.
  */
 @Data
 public class UserDto {
