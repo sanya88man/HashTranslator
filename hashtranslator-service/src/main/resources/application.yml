@@ -11,6 +11,9 @@ server:
 logging:
   level:
     tt.hashtranslator: DEBUG
+springdoc:
+  swagger-ui:
+    path: /docs
 
 # Authorization-service
 auth-service:

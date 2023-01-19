@@ -1,5 +1,6 @@
 package tt.hashtranslator.rest;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -30,6 +31,7 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/applications")
+@Tag(name = "Application API", description = "API for interacting with application for decoding hashes")
 public class ApplicationController {
     private final ApplicationService applicationService;
     private final RestTemplate client;
