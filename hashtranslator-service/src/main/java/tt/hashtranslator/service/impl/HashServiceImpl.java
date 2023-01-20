@@ -33,9 +33,9 @@ public class HashServiceImpl implements HashService {
 
     private final ApplicationRepository applicationRepository;
     private final WebClient hashDecoderClient;
-    @Value("${hash.api.email}")
+    @Value("${hash-api.email}")
     private String hashApiEmail;
-    @Value("${hash.api.code}")
+    @Value("${hash-api.code}")
     private String hashApiCode;
 
     @Async

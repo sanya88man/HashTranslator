@@ -1,3 +1,5 @@
 # Hashtranslator-service
 
-to build app execute: gradle clean build 
+To build app execute: gradle clean build
+
+Swagger-UI url: /docs

@@ -23,9 +23,11 @@ import tt.authorization.service.UserService;
 import javax.validation.Valid;
 
 import static java.lang.String.format;
+import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 
 /**
  * REST controller for manipulating users.
+ *
  * @see tt.authorization.entity.User
  */
 @Slf4j
@@ -44,32 +46,32 @@ public class UserController {
      */
     @Operation(
             summary = "Create user",
-            description = "Method for creating user",
+            description = "Endpoint for creating user",
             responses = {
                     @ApiResponse(
-                            responseCode = "200",
-                            description = "Return created user's email.",
-                            content = @Content(mediaType = "plain/text",
+                            responseCode = "201",
+                            description = "Created user message.",
+                            content = @Content(mediaType = TEXT_PLAIN_VALUE,
                                     schema = @Schema(implementation = String.class),
                                     examples = @ExampleObject(value = "User: alex@mail.com has been created"))),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Bad request.",
-                            content = @Content(mediaType = "plain/text",
+                            description = "Bad request message.",
+                            content = @Content(mediaType = TEXT_PLAIN_VALUE,
                                     schema = @Schema(implementation = String.class),
                                     examples = @ExampleObject(value = "Bad request. Please check your request params"))),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized status.", content = @Content),
                     @ApiResponse(
                             responseCode = "403",
-                            description = "Permission denied.",
-                            content = @Content(mediaType = "plain/text",
+                            description = "Permission denied message.",
+                            content = @Content(mediaType = TEXT_PLAIN_VALUE,
                                     schema = @Schema(implementation = String.class),
                                     examples = @ExampleObject(value = "Permission denied for user: alex@mail.com"))),
-                    @ApiResponse(responseCode = "406", description = "Not Acceptable", content = @Content),
+                    @ApiResponse(responseCode = "406", description = "Not acceptable status.", content = @Content),
                     @ApiResponse(
                             responseCode = "500",
-                            description = "An error occurred on the server.",
-                            content = @Content(mediaType = "plain/text",
+                            description = "Internal server error message.",
+                            content = @Content(mediaType = TEXT_PLAIN_VALUE,
                                     schema = @Schema(implementation = String.class),
                                     examples = @ExampleObject(value = "An error occurred on server"))
                     )
@@ -77,8 +79,8 @@ public class UserController {
     )
     @PostMapping
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Object> create(@Valid @RequestBody UserDto userDto) {
-        log.info("Request to create user {}", userDto.getEmail());
+    public ResponseEntity<String> create(@Valid @RequestBody UserDto userDto) {
+        log.info("Request to create user: {}", userDto.getEmail());
         userService.create(userDto);
         return new ResponseEntity<>(format("User: %s has been created.", userDto.getEmail()), HttpStatus.CREATED);
     }
@@ -91,32 +93,38 @@ public class UserController {
      */
     @Operation(
             summary = "Delete user",
-            description = "Method for deleting user",
+            description = "Endpoint for deleting user by id",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Return message about deleted user.",
-                            content = @Content(mediaType = "plain/text",
+                            description = "Deleted user message.",
+                            content = @Content(mediaType = TEXT_PLAIN_VALUE,
                                     schema = @Schema(implementation = String.class),
                                     examples = @ExampleObject(value = "User: alex@mail.com has been deleted"))),
                     @ApiResponse(
                             responseCode = "400",
-                            description = "Bad request.",
-                            content = @Content(mediaType = "plain/text",
+                            description = "Bad request message.",
+                            content = @Content(mediaType = TEXT_PLAIN_VALUE,
                                     schema = @Schema(implementation = String.class),
                                     examples = @ExampleObject(value = "Bad request. Please check your request params"))),
-                    @ApiResponse(responseCode = "401", description = "Unauthorized", content = @Content),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized status.", content = @Content),
                     @ApiResponse(
                             responseCode = "403",
-                            description = "Permission denied.",
-                            content = @Content(mediaType = "plain/text",
+                            description = "Permission denied message.",
+                            content = @Content(mediaType = TEXT_PLAIN_VALUE,
                                     schema = @Schema(implementation = String.class),
                                     examples = @ExampleObject(value = "Permission denied for user: alex@mail.com"))),
-                    @ApiResponse(responseCode = "406", description = "Not Acceptable", content = @Content),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Not found message.",
+                            content = @Content(mediaType = TEXT_PLAIN_VALUE,
+                                    schema = @Schema(implementation = String.class),
+                                    examples = @ExampleObject(value = "User[id: 344] not found"))),
+                    @ApiResponse(responseCode = "406", description = "Not acceptable status.", content = @Content),
                     @ApiResponse(
                             responseCode = "500",
-                            description = "An error occurred on the server.",
-                            content = @Content(mediaType = "plain/text",
+                            description = "Internal server error message.",
+                            content = @Content(mediaType = TEXT_PLAIN_VALUE,
                                     schema = @Schema(implementation = String.class),
                                     examples = @ExampleObject(value = "An error occurred on server"))
                     )
@@ -124,9 +132,9 @@ public class UserController {
     )
     @DeleteMapping("{id}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public ResponseEntity<Object> delete(@PathVariable long id) {
-        log.info("Request to delete user with id: {}", id);
+    public ResponseEntity<String> delete(@PathVariable long id) {
+        log.info("Request to delete user[id: {}]", id);
         userService.delete(id);
-        return new ResponseEntity<>(format("User: %d has been deleted.", id), HttpStatus.OK);
+        return new ResponseEntity<>(format("User[id: %d] has been deleted.", id), HttpStatus.OK);
     }
 }
