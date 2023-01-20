@@ -23,3 +23,4 @@ auth-service:
 hash-api:
   email: sanya88man@gmail.com
   code: c48637088f7f771d
+  hash-type: md5
