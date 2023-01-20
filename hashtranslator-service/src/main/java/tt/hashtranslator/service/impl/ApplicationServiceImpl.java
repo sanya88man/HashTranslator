@@ -30,13 +30,13 @@ public class ApplicationServiceImpl implements ApplicationService {
         application.setHashes(applicationDto.getHashes());
         Application savedApplication = applicationRepository.save(application);
         hashService.decode(savedApplication);
-        return savedApplication.getId();
+        return format("Application[id: %s] has been accepted", savedApplication.getId());
     }
 
     @Override
     public Application getById(String id) {
         return applicationRepository.findById(id)
                 .orElseThrow(() -> new CommonException(
-                        format("Application with id %s not found", id), HttpStatus.NOT_FOUND.value()));
+                        format("Application[id: %s] not found", id), HttpStatus.NOT_FOUND.value()));
     }
 }

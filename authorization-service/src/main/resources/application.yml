@@ -15,6 +15,9 @@ spring:
 logging:
   level:
     tt.authorization: DEBUG
+springdoc:
+  swagger-ui:
+    path: /docs
 
 # Authorization-service
 auth-service:

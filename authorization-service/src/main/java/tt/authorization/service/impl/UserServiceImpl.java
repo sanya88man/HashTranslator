@@ -32,18 +32,16 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    /**
-     * Creates admin diring  if he doesn't exist.
-     */
     @PostConstruct
     private void execute() {
-        log.debug("Start creating admin with username: {}", adminEmail);
+        log.debug("Start creating admin: {}", adminEmail);
         createAdmin();
+        log.debug("Admin: {} has been created or he already exists", adminEmail);
     }
 
     @Override
     public User create(UserDto userDto) {
-        log.debug("Start creating user with username: {}", userDto.getEmail());
+        log.debug("Start creating user with email: {}", userDto.getEmail());
         checkExistence(userDto.getEmail());
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
         return userRepository.save(new User(userDto));
@@ -51,12 +49,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(long id) {
-        log.debug("Start deleting user with id: {}", id);
+        log.debug("Start deleting user[id: {}]", id);
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new CommonException(format("User with id %d not found", id), NOT_FOUND.value()));
+                .orElseThrow(() -> new CommonException(format("User[id: %d] not found", id), NOT_FOUND.value()));
         userRepository.delete(user);
     }
 
+    /**
+     * Creates admin if he doesn't exist.
+     */
     private void createAdmin() {
         User admin = new User();
         admin.setEmail(adminEmail);

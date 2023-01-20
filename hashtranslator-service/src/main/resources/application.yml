@@ -11,13 +11,16 @@ server:
 logging:
   level:
     tt.hashtranslator: DEBUG
+springdoc:
+  swagger-ui:
+    path: /docs
 
 # Authorization-service
 auth-service:
   url: http://authorization-service:8080/api/auth
 
 # Hash API
-hash:
-  api:
-    email: sanya88man@gmail.com
-    code: c48637088f7f771d
+hash-api:
+  email: sanya88man@gmail.com
+  code: c48637088f7f771d
+  hash-type: md5
