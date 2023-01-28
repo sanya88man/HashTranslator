@@ -17,11 +17,14 @@ import reactor.netty.http.client.HttpClient;
 @Configuration
 public class ClientsConfig {
     private static final String MD5_DECODER_URL = "https://md5decrypt.net/en/Api";
+    private static final int READ_TIMEOUT_SECONDS = 10;
+    private static final int WRITE_TIMEOUT_SECONDS = 10;
+    private static final int CONNECT_TIMEOUT_MILLIS_VALUE = 10000;
 
     /**
      * Creates rest template client bean.
      *
-     * @return new {@link RestTemplate}
+     * @return {@link RestTemplate}
      */
     @Bean
     public RestTemplate restTemplateClient() {
@@ -37,10 +40,10 @@ public class ClientsConfig {
     public WebClient hashDecoderClient() {
         HttpClient httpClient = HttpClient.create()
                 .tcpConfiguration(client ->
-                        client.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)
+                        client.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, CONNECT_TIMEOUT_MILLIS_VALUE)
                                 .doOnConnected(connection -> connection
-                                        .addHandlerLast(new ReadTimeoutHandler(10))
-                                        .addHandlerLast(new WriteTimeoutHandler(10))));
+                                        .addHandlerLast(new ReadTimeoutHandler(READ_TIMEOUT_SECONDS))
+                                        .addHandlerLast(new WriteTimeoutHandler(WRITE_TIMEOUT_SECONDS))));
         ClientHttpConnector connector = new ReactorClientHttpConnector(httpClient);
         return WebClient.builder()
                 .baseUrl(MD5_DECODER_URL)
