@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import tt.hashtranslator.dto.ApplicationDto;
 import tt.hashtranslator.entity.Application;
 import tt.hashtranslator.exception.CommonException;
@@ -23,6 +24,7 @@ public class ApplicationServiceImpl implements ApplicationService {
     private final ApplicationRepository applicationRepository;
     private final HashService hashService;
 
+    @Transactional
     @Override
     public String process(ApplicationDto applicationDto) {
         log.debug("Start processing an application...");

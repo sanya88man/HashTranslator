@@ -14,9 +14,9 @@ import tt.hashtranslator.service.HashService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
+import static java.util.stream.Collectors.toList;
 import static org.springframework.http.HttpStatus.OK;
 import static reactor.core.publisher.Mono.just;
 
@@ -48,15 +48,16 @@ public class HashServiceImpl implements HashService {
     @Override
     public void decode(Application application) {
         log.debug("Start decoding hashes of application with id: {}", application.getId());
-        List<String> resultHashes = decode(application.getHashes()).collect(Collectors.toList()).share().block();
-        resultHashes = Optional.ofNullable(resultHashes).orElse(new ArrayList<>(application.getHashes()));
-        List<String> validatedResultHashes = getValidatedResultHashes(resultHashes);
+        List<String> resultHashes = decode(application.getHashes()).collect(toList()).share().block();
+        List<String> validatedResultHashes = Objects.nonNull(resultHashes)
+                ? getValidatedResultHashes(resultHashes)
+                : new ArrayList<>(application.getHashes());
         application.setHashes(validatedResultHashes);
         applicationRepository.save(application);
     }
 
     private List<String> getValidatedResultHashes(List<String> resultHashes) {
-        return resultHashes.stream().map(h -> h.startsWith(ERROR) ? EMPTY_STRING : h).collect(Collectors.toList());
+        return resultHashes.stream().map(h -> h.startsWith(ERROR) ? EMPTY_STRING : h).collect(toList());
     }
 
     private Mono<String> sendRequestToDecode(String hash) {

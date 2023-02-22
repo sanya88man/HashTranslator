@@ -44,32 +44,32 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(Exception exception) {
         log.error(exception.getMessage());
-        return new ResponseEntity<>(exception.getMessage(), valueOf(INTERNAL_SERVER_ERROR.value()));
+        return new ResponseEntity<>(exception.getMessage(), INTERNAL_SERVER_ERROR);
     }
 
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return logAndCreateResponse(ex);
+        return buildBadRequestResponse(ex);
     }
 
     @Override
     public ResponseEntity<Object> handleHttpMessageNotReadable(
             HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return logAndCreateResponse(ex);
+        return buildBadRequestResponse(ex);
     }
 
     @Override
     protected ResponseEntity<Object> handleTypeMismatch(
             TypeMismatchException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return logAndCreateResponse(ex);
+        return buildBadRequestResponse(ex);
     }
 
     @Override
     protected ResponseEntity<Object> handleMissingServletRequestParameter(
             MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
-        return logAndCreateResponse(ex);
+        return buildBadRequestResponse(ex);
     }
 
     /**
@@ -78,7 +78,7 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
      * @param ex exception to make response for
      * @return {@link ResponseEntity} with error message and http status 400
      */
-    private static ResponseEntity<Object> logAndCreateResponse(Exception ex) {
+    private static ResponseEntity<Object> buildBadRequestResponse(Exception ex) {
         log.error(ex.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
                 "Error during validation, please check your request parameters or request body");
