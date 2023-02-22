@@ -1,4 +1,4 @@
-package tt.hashtranslator.rest;
+package tt.hashtranslator.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -8,10 +8,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,13 +16,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 import tt.hashtranslator.dto.ApplicationDto;
 import tt.hashtranslator.entity.Application;
-import tt.hashtranslator.exception.CommonException;
 import tt.hashtranslator.service.ApplicationService;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -42,15 +35,11 @@ import static org.springframework.http.MediaType.TEXT_PLAIN_VALUE;
 @Tag(name = "Application API", description = "API for interacting with application for decoding hashes")
 public class ApplicationController {
     private final ApplicationService applicationService;
-    private final RestTemplate client;
-    @Value("${auth-service.url}")
-    private String authServiceUrl;
 
     /**
      * Endpoint for sending application to decode MD5 hashes.
      *
      * @param applicationDto {@link ApplicationDto}
-     * @param request        {@link HttpServletRequest}
      * @return {@link ResponseEntity<String>} with http status
      */
     @Operation(
@@ -88,9 +77,8 @@ public class ApplicationController {
             }
     )
     @PostMapping
-    public ResponseEntity<String> send(@Valid @RequestBody ApplicationDto applicationDto, HttpServletRequest request) {
+    public ResponseEntity<String> send(@Valid @RequestBody ApplicationDto applicationDto) {
         log.info("Request to decode hashes...");
-        checkAuth(request.getHeader(HttpHeaders.AUTHORIZATION));
         return new ResponseEntity<>(applicationService.process(applicationDto), HttpStatus.ACCEPTED);
     }
 
@@ -98,7 +86,6 @@ public class ApplicationController {
      * Endpoint for getting application by id.
      *
      * @param id      application id
-     * @param request {@link HttpServletRequest}
      * @return {@link ResponseEntity<Application>} with http status
      */
     @Operation(
@@ -140,24 +127,8 @@ public class ApplicationController {
             }
     )
     @GetMapping("{id}")
-    public ResponseEntity<Application> get(@PathVariable String id, HttpServletRequest request) {
+    public ResponseEntity<Application> get(@PathVariable String id) {
         log.info("Request to get application[id: {}]", id);
-        checkAuth(request.getHeader(HttpHeaders.AUTHORIZATION));
         return new ResponseEntity<>(applicationService.getById(id), HttpStatus.OK);
-    }
-
-    /**
-     * Sends request to auth-service for checking authentication.
-     *
-     * @param token basic token
-     */
-    private void checkAuth(String token) {
-        HttpHeaders headers = new HttpHeaders();
-        HttpEntity<String> httpEntity = new HttpEntity<>(headers);
-        headers.set(HttpHeaders.AUTHORIZATION, token);
-        ResponseEntity<Object> response = client.exchange(authServiceUrl, HttpMethod.POST, httpEntity, Object.class);
-        if (response.getStatusCode().value() != HttpStatus.OK.value()) {
-            throw new CommonException("Unauthorized. Check your credentials", HttpStatus.UNAUTHORIZED.value());
-        }
     }
 }
